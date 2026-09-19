@@ -1,0 +1,1369 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0A0614">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<style>
+  html { -webkit-text-size-adjust: 100%; }
+  :root { padding-top: env(safe-area-inset-top, 0px); padding-bottom: env(safe-area-inset-bottom, 0px); }
+  img { max-width: 100%; }
+  [hidden] { display: none !important; }
+</style>
+<title>VOXIE Session</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+
+</head>
+<body>
+<style>
+  :root {
+    --bg-deep: #0A0614; --bg-base: #100A1C; --surface: #1A1030; --surface-alt: #221640;
+    --border: #2E1F4D; --primary: #7C5CFF; --accent: #A855F7;
+    --success: #4ADE80; --caution: #FBBF24; --danger: #F87171;
+    --text: #F5F1FF; --text-dim: #B9AFD6; --text-mute: #8B80A8;
+    --display: 'Outfit', 'Segoe UI', system-ui, sans-serif;
+    --body: 'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif;
+    --mono: 'IBM Plex Mono', ui-monospace, Menlo, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: radial-gradient(900px 520px at 50% -10%, #1E1238 0%, rgba(30,18,56,0) 60%), var(--bg-deep);
+    color: var(--text); font-family: var(--body); font-size: 15px; line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 520px; margin: 0 auto; padding-inline: 20px; padding-block: 26px 56px; }
+
+  .wordmark {
+    font-family: var(--display); font-weight: 700; font-size: 20px;
+    letter-spacing: 0.22em; text-indent: 0.22em; margin: 0 0 22px; text-align: center;
+    background: linear-gradient(92deg, var(--text), var(--accent) 60%, var(--primary));
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+  }
+
+  h2.q { font-family: var(--display); font-size: 21px; font-weight: 600; margin: 0 0 12px; text-wrap: balance; }
+  .sub { font-size: 13.5px; color: var(--text-mute); margin: 0 0 22px; }
+
+  .choices { display: flex; flex-direction: column; gap: 8px; margin-bottom: 26px; }
+  .choice {
+    text-align: left; padding: 13px 16px; border-radius: 13px;
+    background: var(--bg-base); border: 1px solid var(--border); color: var(--text-dim);
+    font-family: var(--body); font-size: 14.5px; font-weight: 500; cursor: pointer;
+    transition: border-color 0.18s, color 0.18s, background 0.18s;
+  }
+  .choice:hover { border-color: var(--primary); }
+  .choice.is-picked { border-color: var(--primary); color: var(--text); background: var(--surface); }
+  .choice small { display: block; font-size: 12px; color: var(--text-mute); margin-top: 2px; }
+  .choices.row { flex-direction: row; gap: 8px; }
+  .choices.row .choice { flex: 1; text-align: center; font-family: var(--mono); font-size: 13px; }
+
+  button.cta {
+    width: 100%; border: 0; border-radius: 999px; padding: 16px 22px;
+    font-family: var(--body); font-size: 15.5px; font-weight: 600; color: var(--text);
+    background: linear-gradient(94deg, var(--primary), var(--accent));
+    box-shadow: 0 0 22px rgba(124,92,255,0.35); cursor: pointer;
+    transition: opacity 0.15s, transform 0.12s;
+  }
+  button.cta:hover { opacity: 0.93; }
+  button.cta:active { transform: scale(0.988); }
+  button.cta:disabled { opacity: 0.35; cursor: default; box-shadow: none; }
+  button.ghost {
+    background: var(--bg-base); border: 1px solid var(--border);
+    color: var(--text-dim); box-shadow: none;
+  }
+  button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  /* plan */
+  .plan-intro {
+    background: linear-gradient(158deg, var(--surface), var(--surface-alt));
+    border: 1px solid var(--border); border-radius: 16px; padding: 18px;
+    font-size: 14.5px; color: var(--text-dim); margin-bottom: 18px;
+  }
+  .plan-row { display: flex; gap: 13px; align-items: flex-start; padding: 11px 0; border-top: 1px solid var(--border); }
+  .plan-row:first-child { border-top: 0; }
+  .plan-num {
+    flex: 0 0 24px; height: 24px; border-radius: 8px; background: var(--bg-base);
+    border: 1px solid var(--border); color: var(--text-mute);
+    font-family: var(--mono); font-size: 11px; display: flex; align-items: center; justify-content: center;
+  }
+  .plan-name { font-size: 14.5px; font-weight: 600; color: var(--text); }
+  .plan-meta { font-family: var(--mono); font-size: 11px; color: var(--text-mute); }
+
+  /* session */
+  .progress-track { height: 3px; background: var(--bg-base); border-radius: 999px; overflow: hidden; margin-bottom: 18px; }
+  .progress-fill { height: 100%; width: 0; background: linear-gradient(90deg, var(--primary), var(--accent)); transition: width 0.6s ease; }
+
+  .block-head { margin-bottom: 14px; }
+  .block-of { font-size: 10px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--accent); margin: 0 0 3px; }
+  .block-name { font-family: var(--display); font-size: 23px; font-weight: 700; margin: 0; text-wrap: balance; }
+
+  .stage-card {
+    background: linear-gradient(158deg, var(--surface), var(--surface-alt));
+    border: 1px solid var(--border); border-radius: 20px; padding: 20px; text-align: center;
+  }
+  .stage-label {
+    font-size: 10px; font-weight: 700; letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--text-mute); min-height: 14px;
+  }
+  .note-name {
+    font-family: var(--display); font-weight: 700; font-size: 52px; line-height: 1.15;
+    color: var(--text-mute); transition: color 0.15s;
+  }
+  .note-name.is-on { color: var(--accent); }
+  canvas#trace {
+    display: block; width: 100%; max-width: 100%; height: 120px; margin: 6px 0 4px;
+    background: var(--bg-base); border: 1px solid var(--border); border-radius: 12px;
+  }
+  .coach-says {
+    font-size: 16px; color: var(--text); min-height: 50px;
+    display: flex; align-items: center; justify-content: center; text-wrap: balance;
+    padding: 10px 4px 2px;
+  }
+
+  .session-actions { display: flex; gap: 9px; margin-top: 16px; }
+  .session-actions button { flex: 1; border-radius: 999px; padding: 13px 16px; font-size: 14px; font-weight: 600; cursor: pointer; border: 0; font-family: var(--body); }
+  .tight-btn { background: var(--bg-base); border: 1px solid rgba(251,191,36,0.45); color: var(--caution); }
+  .done-btn { background: linear-gradient(94deg, var(--primary), var(--accent)); color: var(--text); }
+
+  .teach { margin-top: 16px; text-align: center; }
+  .teach-toggle {
+    background: none; border: 0; color: var(--text-mute); cursor: pointer;
+    font-family: var(--body); font-size: 11px; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase; padding: 6px;
+  }
+  .teach-body { font-size: 13.5px; color: var(--text-dim); text-align: left; padding: 10px 2px 0; }
+  .why { font-size: 13.5px; color: var(--text-dim); margin: 14px 0 0; }
+
+  /* summary */
+  .summary-title { font-family: var(--display); font-size: 25px; font-weight: 700; margin: 0 0 14px; }
+  .summary-body p { font-size: 14.5px; color: var(--text-dim); margin: 0 0 12px; }
+  .summary-body strong { color: var(--text); font-weight: 600; }
+  .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 9px; margin: 18px 0 22px; }
+  .stat { background: var(--bg-base); border: 1px solid var(--border); border-radius: 13px; padding: 13px; text-align: center; }
+  .stat-value { font-family: var(--display); font-size: 21px; font-weight: 700; color: var(--text); }
+  .stat-label { font-size: 9.5px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text-mute); margin-top: 2px; }
+
+  .notice { border: 1px solid var(--danger); background: rgba(248,113,113,0.08); border-radius: 12px; padding: 12px 14px; font-size: 13px; color: var(--text-dim); margin-bottom: 16px; }
+  .notice strong { color: var(--text); font-weight: 600; }
+
+  footer { margin-top: 30px; text-align: center; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--text-mute); }
+
+  @media (prefers-reduced-motion: reduce) { * { transition-duration: 0.01ms !important; } }
+</style>
+
+<div class="wrap">
+  <h1 class="wordmark">VOXIE</h1>
+  <div class="notice" id="errorNotice" hidden></div>
+
+  <!-- CHECK IN -->
+  <section id="screenCheckin">
+    <h2 class="q">How does your voice feel today?</h2>
+    <p class="sub">Be honest. It changes what we do.</p>
+    <div class="choices" id="feelRow">
+      <button class="choice" type="button" data-value="fresh">Fresh and ready<small>Rested, nothing bothering me</small></button>
+      <button class="choice" type="button" data-value="fine">Fine, normal<small>Nothing special either way</small></button>
+      <button class="choice" type="button" data-value="tired">A bit tired<small>Sang a lot recently, or slept badly</small></button>
+      <button class="choice" type="button" data-value="rough">Rough or scratchy<small>Sore, hoarse, or getting over something</small></button>
+    </div>
+
+    <h2 class="q">What do you want from today?</h2>
+    <div class="choices" id="goalRow">
+      <button class="choice" type="button" data-value="warmup">Just warm me up</button>
+      <button class="choice" type="button" data-value="breaks">Smooth out my breaks</button>
+      <button class="choice" type="button" data-value="range">Work on my range</button>
+      <button class="choice" type="button" data-value="strength">Build steadiness</button>
+    </div>
+
+    <h2 class="q">How long have you got?</h2>
+    <div class="choices row" id="timeRow">
+      <button class="choice" type="button" data-value="5">5 min</button>
+      <button class="choice is-picked" type="button" data-value="10">10 min</button>
+      <button class="choice" type="button" data-value="20">20 min</button>
+    </div>
+
+    <button class="cta" id="beginBtn" type="button" disabled>Build my session</button>
+  </section>
+
+  <!-- PLAN -->
+  <section id="screenPlan" hidden>
+    <h2 class="q">Here&rsquo;s what we&rsquo;re doing</h2>
+    <p class="plan-intro" id="planIntro"></p>
+    <div id="planList"></div>
+    <button class="cta" id="planStartBtn" type="button" style="margin-top:18px">Let&rsquo;s go</button>
+  </section>
+
+  <!-- SESSION -->
+  <section id="screenSession" hidden>
+    <div class="progress-track"><div class="progress-fill" id="sessionProgress"></div></div>
+    <div class="block-head">
+      <p class="block-of" id="blockOf">Part 1 of 4</p>
+      <h2 class="block-name" id="blockName">Lip Trill</h2>
+    </div>
+
+    <div class="stage-card">
+      <div class="stage-label" id="stageLabel">Listen</div>
+      <div class="note-name" id="noteName">&middot;</div>
+      <canvas id="trace" width="480" height="120" aria-label="Your pitch against the notes VOXIE played"></canvas>
+      <div class="coach-says" id="coachSays"></div>
+      <div class="session-actions">
+        <button class="tight-btn" id="tightBtn" type="button">That felt tight</button>
+        <button class="done-btn" id="doneBtn" type="button" hidden>Done</button>
+      </div>
+    </div>
+
+    <div class="teach">
+      <button class="teach-toggle" id="teachToggle" type="button">How to do it</button>
+      <div class="teach-body" id="teachBody" hidden></div>
+    </div>
+    <p class="why" id="blockWhy"></p>
+  </section>
+
+  <!-- SUMMARY -->
+  <section id="screenSummary" hidden>
+    <h2 class="summary-title" id="summaryTitle">Nicely done</h2>
+    <div class="summary-body" id="summaryBody"></div>
+    <div class="stats" id="summaryStats"></div>
+    <button class="cta ghost" id="restartBtn" type="button">Start another session</button>
+  </section>
+
+  <footer>Find your voice without losing it</footer>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  /* ============================================================
+     MUSIC MATH
+     ============================================================ */
+  var A4_FREQUENCY = 440, A4_MIDI = 69;
+  var NOTE_NAMES = ['C','C#','D','D#','E','F','F#','G','G#','A','A#','B'];
+
+  function frequencyToMidi(f) { return f <= 0 ? NaN : A4_MIDI + 12 * Math.log2(f / A4_FREQUENCY); }
+  function midiToFrequency(m) { return A4_FREQUENCY * Math.pow(2, (m - A4_MIDI) / 12); }
+  function midiToNoteName(m) {
+    var r = Math.round(m);
+    if (!isFinite(r)) return '—';
+    return NOTE_NAMES[((r % 12) + 12) % 12] + (Math.floor(r / 12) - 1);
+  }
+  function centsFromNearestNote(f) {
+    var m = frequencyToMidi(f);
+    return isFinite(m) ? (m - Math.round(m)) * 100 : NaN;
+  }
+  function centsFromTarget(f, target) {
+    var m = frequencyToMidi(f);
+    return isFinite(m) ? (m - target) * 100 : NaN;
+  }
+  function centsToScore(cents, tol) {
+    if (!isFinite(cents)) return 0;
+    return Math.max(0, Math.round(100 * (1 - Math.abs(cents) / (tol || 50))));
+  }
+
+  /* ============================================================
+     SIGNAL CONDITIONING AND PITCH DETECTION
+     Ported unchanged from the Voice Lab, where it was verified
+     against an independent tuner.
+     ============================================================ */
+  function makeLowpass(fs, f0, Q) {
+    var w0 = 2 * Math.PI * f0 / fs, c = Math.cos(w0), s = Math.sin(w0), alpha = s / (2 * Q), a0 = 1 + alpha;
+    return { b0: ((1-c)/2)/a0, b1: (1-c)/a0, b2: ((1-c)/2)/a0, a1: (-2*c)/a0, a2: (1-alpha)/a0 };
+  }
+  function makeHighpass(fs, f0, Q) {
+    var w0 = 2 * Math.PI * f0 / fs, c = Math.cos(w0), s = Math.sin(w0), alpha = s / (2 * Q), a0 = 1 + alpha;
+    return { b0: ((1+c)/2)/a0, b1: (-(1+c))/a0, b2: ((1+c)/2)/a0, a1: (-2*c)/a0, a2: (1-alpha)/a0 };
+  }
+  function biquad(src, dst, c) {
+    var x1=0, x2=0, y1=0, y2=0;
+    for (var i = 0; i < src.length; i++) {
+      var x = src[i];
+      var y = c.b0*x + c.b1*x1 + c.b2*x2 - c.a1*y1 - c.a2*y2;
+      x2=x1; x1=x; y2=y1; y1=y; dst[i]=y;
+    }
+  }
+
+  var lpCoeffs = null, hpCoeffs = null, filtered = null, scratch = null;
+
+  function conditionSignal(src, fs) {
+    if (!lpCoeffs) { lpCoeffs = makeLowpass(fs, 1500, 0.707); hpCoeffs = makeHighpass(fs, 70, 0.707); }
+    if (!filtered || filtered.length !== src.length) {
+      filtered = new Float32Array(src.length);
+      scratch = new Float32Array(src.length);
+    }
+    var mean = 0;
+    for (var i = 0; i < src.length; i++) mean += src[i];
+    mean /= src.length;
+    for (var k = 0; k < src.length; k++) scratch[k] = src[k] - mean;
+    biquad(scratch, filtered, hpCoeffs);
+    biquad(filtered, scratch, lpCoeffs);
+    filtered.set(scratch);
+    return filtered;
+  }
+
+  function detectYin(buf, fs, minFreq, maxFreq) {
+    var threshold = 0.17;
+    var W = Math.floor(buf.length / 2);
+    var tauMin = Math.max(2, Math.floor(fs / maxFreq));
+    var tauMax = Math.min(Math.floor(fs / minFreq), W - 1);
+    if (tauMax <= tauMin) return null;
+
+    var diff = new Float32Array(tauMax + 1);
+    for (var tau = 1; tau <= tauMax; tau++) {
+      var sum = 0;
+      for (var j = 0; j < W; j++) { var d = buf[j] - buf[j+tau]; sum += d*d; }
+      diff[tau] = sum;
+    }
+    var cmnd = new Float32Array(tauMax + 1);
+    cmnd[0] = 1;
+    var running = 0;
+    for (var t = 1; t <= tauMax; t++) {
+      running += diff[t];
+      cmnd[t] = running === 0 ? 1 : (diff[t] * t) / running;
+    }
+    var best = -1;
+    for (var k = tauMin; k <= tauMax; k++) {
+      if (cmnd[k] < threshold) {
+        while (k + 1 <= tauMax && cmnd[k+1] < cmnd[k]) k++;
+        best = k; break;
+      }
+    }
+    if (best === -1) {
+      var lowest = Infinity;
+      for (var n = tauMin; n <= tauMax; n++) if (cmnd[n] < lowest) { lowest = cmnd[n]; best = n; }
+      if (lowest > 0.55) return null;
+    }
+    for (var pass = 0; pass < 2; pass++) {
+      var half = Math.round(best / 2);
+      if (half < tauMin) break;
+      if (cmnd[half] < 0.38 && cmnd[half] < cmnd[best] * 2.2) {
+        var lo = Math.max(tauMin, half-2), hi = Math.min(tauMax, half+2), bh = lo;
+        for (var q = lo; q <= hi; q++) if (cmnd[q] < cmnd[bh]) bh = q;
+        best = bh;
+      } else break;
+    }
+    var refined = best;
+    if (best > tauMin && best < tauMax) {
+      var s0 = cmnd[best-1], s1 = cmnd[best], s2 = cmnd[best+1];
+      var den = 2 * (2*s1 - s2 - s0);
+      if (den !== 0) refined = best + (s2 - s0) / den;
+    }
+    var freq = fs / refined;
+    if (freq < minFreq || freq > maxFreq) return null;
+    return { freq: freq, confidence: Math.max(0, Math.min(1, 1 - cmnd[best])) };
+  }
+
+  /* Octave lock, as verified in the Voice Lab. */
+  var LOCK_WINDOW_MS = 450, LOCK_MIN_HISTORY = 4, LOCK_TOLERANCE = 0.8;
+  var LOCK_STABLE_SPREAD = 1.6, LOCK_RELEASE_MS = 320;
+  var lock = { history: [], correctingSince: 0, corrections: 0, lastT: -1 };
+
+  function resetOctaveLock() { lock = { history: [], correctingSince: 0, corrections: 0, lastT: -1 }; }
+
+  function applyOctaveLock(freq, t) {
+    var h = lock.history;
+    while (h.length && t - h[0].t > LOCK_WINDOW_MS) h.shift();
+    if (lock.lastT >= 0 && t - lock.lastT > 250) { h.length = 0; lock.correctingSince = 0; }
+    lock.lastT = t;
+    if (freq <= 0) return freq;
+    var midi = frequencyToMidi(freq);
+    if (h.length < LOCK_MIN_HISTORY) { h.push({ midi: midi, t: t }); return freq; }
+
+    var midis = h.map(function (x) { return x.midi; });
+    var center = median(midis);
+    var spread = Math.max.apply(null, midis) - Math.min.apply(null, midis);
+    if (spread > LOCK_STABLE_SPREAD) { h.push({ midi: midi, t: t }); lock.correctingSince = 0; return freq; }
+
+    var delta = midi - center, octaves = Math.round(delta / 12);
+    if (octaves !== 0 && Math.abs(delta - octaves * 12) <= LOCK_TOLERANCE) {
+      if (!lock.correctingSince) lock.correctingSince = t;
+      if (t - lock.correctingSince < LOCK_RELEASE_MS) {
+        var fixed = midi - octaves * 12;
+        lock.corrections++;
+        h.push({ midi: fixed, t: t });
+        return midiToFrequency(fixed);
+      }
+      h.length = 0; lock.correctingSince = 0;
+    } else lock.correctingSince = 0;
+
+    h.push({ midi: midi, t: t });
+    return freq;
+  }
+
+  /* ============================================================
+     ANALYSIS
+     ============================================================ */
+  var MIN_CONFIDENCE = 0.6, MIN_VOLUME_DB = -45, ONSET_SETTLE_MS = 200, MIN_NOTE_MS = 120;
+
+  function median(v) {
+    if (!v.length) return NaN;
+    var s = v.slice().sort(function (a,b) { return a-b; }), m = Math.floor(s.length/2);
+    return s.length % 2 === 0 ? (s[m-1]+s[m])/2 : s[m];
+  }
+  function stdDev(v) {
+    if (v.length < 2) return 0;
+    var mean = v.reduce(function(a,b){return a+b;},0)/v.length;
+    return Math.sqrt(v.reduce(function(a,b){return a+(b-mean)*(b-mean);},0)/(v.length-1));
+  }
+  function sum(a) { return a.reduce(function(x,y){return x+y;},0); }
+
+  function cleanSamples(s) {
+    return s.filter(function (x) {
+      return x.pitch > 0 && x.pitch >= 41 && x.pitch <= 2093 &&
+             x.confidence >= MIN_CONFIDENCE && x.volume >= MIN_VOLUME_DB;
+    });
+  }
+
+  function segmentNotes(samples) {
+    var clean = cleanSamples(samples);
+    if (!clean.length) return [];
+    var notes = [], group = [clean[0]];
+
+    function flush() {
+      if (!group.length) return;
+      var startMs = group[0].t, durationMs = group[group.length-1].t - startMs;
+      if (durationMs < MIN_NOTE_MS) { group = []; return; }
+      var steady = group.filter(function (s) { return s.t - startMs >= ONSET_SETTLE_MS; });
+      var measured = steady.length >= 3 ? steady : group;
+      var centerMidi = Math.round(median(measured.map(function (s) { return frequencyToMidi(s.pitch); })));
+      var cents = measured.map(function (s) { return centsFromTarget(s.pitch, centerMidi); });
+      notes.push({
+        midi: centerMidi, noteName: midiToNoteName(centerMidi),
+        startMs: startMs, durationMs: durationMs,
+        centsOff: Math.round(median(cents)*10)/10,
+        centsSpread: Math.round(stdDev(cents)*10)/10
+      });
+      group = [];
+    }
+
+    for (var i = 1; i < clean.length; i++) {
+      var p = clean[i-1], c = clean[i];
+      if (Math.abs(frequencyToMidi(c.pitch) - frequencyToMidi(p.pitch)) > 0.75 || c.t - p.t > 250) flush();
+      group.push(c);
+    }
+    flush();
+    return notes;
+  }
+
+  /* Walks the sung notes against the expected pattern in order, so a
+     singer who gets every note right but adds an extra is not punished
+     the same as one who sang the wrong notes. */
+  function matchSequence(notes, targets) {
+    var matches = [], searchFrom = 0;
+    for (var i = 0; i < targets.length; i++) {
+      var found = null;
+      for (var j = searchFrom; j < notes.length; j++) {
+        if (Math.abs(notes[j].midi - targets[i]) <= 0.5) { found = notes[j]; searchFrom = j + 1; break; }
+      }
+      matches.push({ target: targets[i], note: found });
+    }
+    return matches;
+  }
+
+  function analyzeAttempt(samples, targets) {
+    var notes = segmentNotes(samples), flags = [];
+    if (!notes.length) {
+      flags.push(samples.some(function (s) { return s.volume >= MIN_VOLUME_DB; }) ? 'low_confidence' : 'no_voice');
+      return { pitchAccuracy: 0, pitchStability: 0, sequenceScore: 0, score: 0,
+               notes: [], matches: [], flags: flags, longestSustainMs: 0 };
+    }
+
+    var matches = matchSequence(notes, targets);
+    var hits = matches.filter(function (m) { return m.note; });
+    var sequenceScore = Math.round((hits.length / targets.length) * 100);
+
+    // Accuracy is measured only on notes the singer actually landed on,
+    // otherwise a missed note would be counted twice.
+    var accScores = hits.map(function (m) { return centsToScore(m.note.centsOff); });
+    var pitchAccuracy = accScores.length ? Math.round(sum(accScores)/accScores.length) : 0;
+
+    var stabScores = notes.map(function (n) { return Math.max(0, Math.round(100*(1 - n.centsSpread/40))); });
+    var pitchStability = Math.round(sum(stabScores)/stabScores.length);
+
+    var clean = cleanSamples(samples);
+    var avgVol = clean.length ? sum(clean.map(function (s) { return s.volume; }))/clean.length : -99;
+    if (avgVol < -35) flags.push('too_quiet');
+    if (clean.some(function (s) { return s.volume > -1; })) flags.push('clipping');
+
+    // Direction of error: consistently flat or consistently sharp is a
+    // different problem from scattered, and gets different coaching.
+    var offsets = hits.map(function (m) { return m.note.centsOff; });
+    var medianOffset = offsets.length ? median(offsets) : 0;
+
+    // Does it fall apart at the top? Compare the highest third of the
+    // notes against the rest.
+    var byPitch = notes.slice().sort(function (a,b) { return a.midi - b.midi; });
+    var topCount = Math.max(1, Math.floor(byPitch.length / 3));
+    var top = byPitch.slice(-topCount), rest = byPitch.slice(0, -topCount);
+    var topSpread = sum(top.map(function (n) { return n.centsSpread; })) / top.length;
+    var restSpread = rest.length ? sum(rest.map(function (n) { return n.centsSpread; }))/rest.length : topSpread;
+    var topDegrades = rest.length > 0 && topSpread > restSpread * 1.8 && topSpread > 22;
+    if (topDegrades) flags.push('strain_suspected');
+
+    var score = Math.round(pitchAccuracy * 0.45 + pitchStability * 0.3 + sequenceScore * 0.25);
+
+    return {
+      pitchAccuracy: pitchAccuracy, pitchStability: pitchStability,
+      sequenceScore: sequenceScore, score: score,
+      notes: notes, matches: matches, flags: flags,
+      medianOffset: Math.round(medianOffset),
+      topDegrades: topDegrades,
+      missedCount: targets.length - hits.length,
+      longestSustainMs: Math.round(Math.max.apply(null, notes.map(function (n) { return n.durationMs; })))
+    };
+  }
+
+
+  /* Semi-occluded vocal tract work, onsets, registers, resonance,
+     agility and dynamics. Every entry carries the technique behind it,
+     because a drill you do not understand is just noise you make. */
+  var EXERCISES = [
+    {
+      id: 'sovt-lip-trill', name: 'Lip Trill, 5-Note Scale', category: 'SOVT Warmup',
+      pattern: [0,2,4,5,7,5,4,2,0], rootMidi: 55, tempo: 96, sound: 'lip trill',
+      instruction: 'Let your lips flap loosely and ride the scale up and back down on one steady stream of air.',
+      why: 'This is a semi-occluded vocal tract exercise. Narrowing the opening at your lips sends a little air pressure back down onto the vocal folds, which helps them vibrate with less collision force. You get the benefit of singing without the wear of singing, which is why almost every voice teacher starts here.',
+      watchFor: 'If the trill keeps stalling, you are either pressing too hard or not moving enough air. Rest two fingers lightly on your cheeks and let the air do the work.'
+    },
+    {
+      id: 'sovt-tongue-trill', name: 'Tongue Trill, Rising Fifth', category: 'SOVT Warmup',
+      pattern: [0,4,7,4,0], rootMidi: 57, tempo: 92, sound: 'rolled R',
+      instruction: 'Roll an R and keep it rolling through the whole shape without a break.',
+      why: 'Same semi-occluded principle as the lip trill, but the narrowing sits further back, so it engages the tongue and soft palate differently. Some voices find the tongue trill easier to sustain through a register change than the lip trill.',
+      watchFor: 'A tongue trill needs a relaxed jaw. If your jaw is clenching to hold the roll, drop it slightly.'
+    },
+    {
+      id: 'sovt-straw-siren', name: 'Straw Phonation Siren', category: 'SOVT Warmup',
+      pattern: [0,12,0], rootMidi: 55, tempo: 40, sound: 'through a straw, or lips pursed on OO',
+      instruction: 'Sing through a drinking straw if you have one, or purse your lips as though you are. Slide up an octave and back down without a break.',
+      why: 'Straw phonation is the most studied of the semi-occluded exercises, developed by the voice scientist Ingo Titze. The straw creates steady back pressure that helps the folds meet more efficiently, so you get more sound for less effort. It is widely used in voice therapy as well as training.',
+      watchFor: 'Quiet and smooth is the whole point. If your cheeks are ballooning or you feel strain, you are pushing far more air than this needs.',
+      health: 'This is the single kindest thing you can do for a tired voice.'
+    },
+    {
+      id: 'sovt-ng-siren', name: 'Ng Siren', category: 'SOVT Warmup',
+      pattern: [0,7,12,7,0], rootMidi: 55, tempo: 46, sound: 'ng, as in sing',
+      instruction: 'Make the ng sound at the back of your mouth and slide smoothly through the shape, like a soft siren.',
+      why: 'The ng closes the mouth off and sends the sound through the nose, which makes register transitions much easier to slide through. Bumps you can feel here are the passaggio, the gear change between chest and head voice.',
+      watchFor: 'Feel for where it wants to bump or break. That location is useful information, not a fault.'
+    },
+
+    {
+      id: 'onset-balanced', name: 'Balanced Onset', category: 'Onset',
+      pattern: [0,0,0,0], rootMidi: 60, tempo: 52, sound: 'ah', articulation: 'staccato',
+      instruction: 'Sing four separate ah sounds on the same note. Aim for the air and the tone to start at exactly the same instant. No click at the front, no puff of air.',
+      why: 'A balanced onset, sometimes called a coordinated or simultaneous onset, is where breath flow and vocal fold closure arrive together. It is the healthy default and the one you want to become automatic. The other two onsets in this section exist so you can feel the difference.',
+      watchFor: 'If you hear a small click before the vowel, that is a glottal onset. If you hear a breathy h, that is an aspirate onset. Aim for neither.'
+    },
+    {
+      id: 'onset-aspirate', name: 'Aspirate Onset', category: 'Onset',
+      pattern: [0,0,0], rootMidi: 60, tempo: 50, sound: 'hah', articulation: 'staccato',
+      instruction: 'Sing three hah sounds, deliberately letting a little air escape before the tone starts.',
+      why: 'In an aspirate onset the air starts flowing before the folds come together, so the sound begins breathy. It is useful as a gentle way in for a voice that habitually slams shut, and it is a real stylistic choice in pop and jazz.',
+      watchFor: 'Used constantly it wastes breath and dries the folds out, so treat it as a tool rather than a habit. Notice how much sooner you run out of air on this one.'
+    },
+    {
+      id: 'onset-glottal-awareness', name: 'Glottal Attack, Awareness Only', category: 'Onset',
+      pattern: [0,0], rootMidi: 60, tempo: 46, sound: 'uh-oh, then ah', articulation: 'staccato',
+      instruction: 'Say uh-oh and notice the small catch in your throat between the two syllables. Now sing two ah sounds with that same catch at the front. Two is enough.',
+      why: 'A glottal attack, or hard onset, is when the folds press together before the air arrives, so the sound starts with a click as the pressure releases. You are doing this exercise to recognise the sensation, not to build it. Once you can feel it, you can hear it in your own singing and choose something else.',
+      watchFor: 'Habitual hard onsets mean the folds collide with more force on every single note, and that adds up over a career. Singers who start every vowel this way often find their voice tires quickly.',
+      health: 'Two or three repetitions only, then move on. If your throat feels at all scratchy, stop and go back to the straw siren.'
+    },
+    {
+      id: 'onset-staccato-arpeggio', name: 'Staccato Arpeggio', category: 'Onset',
+      pattern: [0,4,7,12,7,4,0], rootMidi: 55, tempo: 120, sound: 'ha or hey', articulation: 'staccato',
+      instruction: 'Short, light, separated notes up and down the arpeggio. Think of each note as a small bounce rather than a push.',
+      why: 'Staccato trains fast, clean onset coordination across a wide pitch span. Because each note is short, there is no time to muscle it, which is exactly why it exposes any tendency to squeeze.',
+      watchFor: 'The bounce comes from low down, not from your throat. If your throat is doing the bouncing, go quieter.'
+    },
+
+    {
+      id: 'breath-appoggio-sustain', name: 'Steady Sustain', category: 'Breath',
+      pattern: [0], rootMidi: 60, tempo: 40, sound: 'ah',
+      instruction: 'Take a low, easy breath and sing one note at an even volume for as long as it stays comfortable. Stop while it is still easy.',
+      why: 'This trains appoggio, the Italian term for leaning on the breath. The idea is that your ribs stay expanded as you sing rather than collapsing immediately, so the air leaves at a rate you choose. Evenness, not length, is the skill being measured here.',
+      watchFor: 'Watch the trace. A flat line means steady air. A line that sags at the end means you are running past your comfortable capacity.'
+    },
+    {
+      id: 'breath-messa-di-voce', name: 'Messa di Voce', category: 'Dynamics',
+      pattern: [0], rootMidi: 59, tempo: 32, sound: 'ah',
+      instruction: 'On one note, start as quietly as you can, grow gradually to full voice, then shrink back to nothing. Keep the pitch dead centre the whole way.',
+      why: 'Messa di voce is one of the oldest and most demanding exercises in classical training. Holding pitch steady while volume changes requires the breath and the folds to rebalance continuously, because loud and quiet want different amounts of everything.',
+      watchFor: 'Pitch usually rises as you get louder and falls as you get quieter. The trace will show you exactly where yours drifts.'
+    },
+
+    {
+      id: 'chest-descending-5', name: 'Descending Five, Chest Voice', category: 'Chest Voice',
+      pattern: [7,5,4,2,0], rootMidi: 53, tempo: 92, sound: 'mum',
+      instruction: 'Start on the top note and walk down to the bottom. Full and speech-like, without pressing.',
+      why: 'Descending patterns let you carry the fuller, speech-like quality of chest voice downward without dragging weight upward, which is the usual way singers get into trouble. The m at the front adds a little helpful back pressure.',
+      watchFor: 'If it feels heavy or pushed, sing it quieter. Volume is not the same thing as strength.'
+    },
+    {
+      id: 'head-descending-octave', name: 'Descending Octave, Head Voice', category: 'Head Voice',
+      pattern: [12,7,4,0], rootMidi: 60, tempo: 76, sound: 'oo',
+      instruction: 'Begin light and high on oo, then come down without letting the sound get heavier as you descend.',
+      why: 'Head voice is produced with the folds thinner and longer, giving a lighter, more flute-like tone. Starting high and coming down means you arrive in the middle of your voice already light, which is the coordination that makes a smooth mix possible.',
+      watchFor: 'The temptation is to thicken up as you descend. Resist it for now. You are training the light coordination specifically.'
+    },
+    {
+      id: 'mix-passaggio-nay', name: 'Through the Passaggio', category: 'Mix',
+      pattern: [0,2,4,5,7,5,4,2,0], rootMidi: 57, tempo: 104, sound: 'nay',
+      instruction: 'A slightly bratty nay, kept exactly the same brightness from bottom to top. Do not let it get louder as it rises.',
+      why: 'The passaggio is the transition zone where your voice wants to change gears. The nay sound holds the vocal tract in a consistent shape, which discourages the sudden flip or crack that happens when the shape changes mid-phrase. Mix voice is the coordination that lets you pass through smoothly rather than switching abruptly.',
+      watchFor: 'The crack, when it comes, always comes at roughly the same pitch. Find out where yours is. That knowledge is worth more than getting through cleanly today.'
+    },
+    {
+      id: 'mix-octave-repeat', name: 'Octave Repeat', category: 'Mix',
+      pattern: [0,12,0,12,0], rootMidi: 55, tempo: 84, sound: 'wee',
+      instruction: 'Jump between the low note and the note an octave above, back and forth, keeping both notes the same weight.',
+      why: 'Octave leaps force the two registers to talk to each other repeatedly in quick succession. Over time the gap between how the two notes feel narrows, and that narrowing is what people mean by blending your registers.',
+      watchFor: 'Most singers get loud on the top note and heavy on the bottom. Aim for the two notes to sound like relatives.'
+    },
+
+    {
+      id: 'resonance-vowel-migration', name: 'Vowel Migration', category: 'Resonance',
+      pattern: [0,2,4,2,0], rootMidi: 58, tempo: 72, sound: 'ee, ay, ah on one breath',
+      instruction: 'Sing the shape three times without stopping, moving ee to ay to ah. Keep the pitch and the effort identical while only the vowel changes.',
+      why: 'Each vowel has its own resonant frequencies, set by the shape of your mouth and throat. Moving between vowels on the same pitch teaches you to change the shape without changing the effort, which is how singers keep tone even across a lyric.',
+      watchFor: 'Listen for the volume jumping as the vowel changes. That is resonance doing work your muscles were about to do.'
+    },
+    {
+      id: 'resonance-hum-to-ah', name: 'Hum Into Ah', category: 'Resonance',
+      pattern: [0,0,0], rootMidi: 57, tempo: 40, sound: 'mmm opening to ah',
+      instruction: 'Start each note humming, feel the buzz around your lips and nose, then open into ah while keeping that buzz in the same place.',
+      why: 'The hum gives you a clear physical sensation of forward resonance. Opening to a vowel while keeping the buzz carries that resonance into full voice, which is what people are pointing at when they talk about placement.',
+      watchFor: 'If the buzz vanishes the moment you open, the sound has dropped back into your throat. Go back to the hum and open more gradually.'
+    },
+
+    {
+      id: 'agility-fast-scale', name: 'Fast Nine-Note Scale', category: 'Agility',
+      pattern: [0,2,4,5,7,5,4,2,0], rootMidi: 57, tempo: 176, sound: 'ah',
+      instruction: 'The same five note scale, much faster. Light and accurate beats loud and approximate.',
+      why: 'Speed removes the option of muscling each note individually, so agility work trains the fine coordination that makes runs and riffs possible. It also tends to expose exactly which note in the pattern you have been forcing.',
+      watchFor: 'Smearing the middle notes is normal at first. Slow down until each note is distinct, then build the speed back up.'
+    },
+    {
+      id: 'agility-turn', name: 'The Turn', category: 'Agility',
+      pattern: [0,2,0,-1,0], rootMidi: 60, tempo: 152, sound: 'ah',
+      instruction: 'A quick ornament around one note: up a step, back, down a half step, back. Light throughout.',
+      why: 'The turn is a building block of ornamentation across classical, gospel, soul and pop. Practising it in isolation gives you a shape you can drop into a melody rather than improvising one under pressure.',
+      watchFor: 'Keep your jaw still. Runs come from the folds, not from chewing the notes.'
+    },
+
+    {
+      id: 'cooldown-descending-hum', name: 'Descending Cool Down', category: 'Cool Down',
+      pattern: [4,2,0], rootMidi: 57, tempo: 60, sound: 'hum on M',
+      instruction: 'Three descending notes on a quiet hum. Easy, no effort, no volume.',
+      why: 'A cool down brings the voice back toward its neutral speaking coordination after you have been working at the edges of it. It is the same principle as stretching after a run, and it takes under a minute.',
+      watchFor: 'If it feels like work, you are doing it too loudly.'
+    },
+    {
+      id: 'cooldown-glide-down', name: 'Gentle Downward Glide', category: 'Cool Down',
+      pattern: [7,0], rootMidi: 55, tempo: 30, sound: 'oo or a light siren',
+      instruction: 'One slow slide from comfortable down to low, as quietly as you can manage. Repeat a few times.',
+      why: 'Slow descending glides at low volume let the folds settle back to a relaxed length and thickness. This is the last thing to do before you put your voice away for the day.',
+      watchFor: 'No pushing at the bottom. If the note will not come out, you have gone low enough.'
+    }
+  ];
+
+
+  /* ============================================================
+     THE SYNTH that demonstrates each exercise
+     ============================================================ */
+  var audioCtx = null;
+
+  function getAudioContext() {
+    if (!audioCtx) {
+      var AC = window.AudioContext || window.webkitAudioContext;
+      audioCtx = new AC();
+    }
+    return audioCtx;
+  }
+
+  /* A warm tone rather than a bare sine: a fundamental with two quieter
+     harmonics and a soft attack, so it sounds like something to sing
+     with instead of a hearing test. */
+  function playTone(freq, startAt, durationSec) {
+    var ac = getAudioContext();
+    var master = ac.createGain();
+    master.connect(ac.destination);
+    master.gain.setValueAtTime(0, startAt);
+    master.gain.linearRampToValueAtTime(0.22, startAt + 0.03);
+    master.gain.setValueAtTime(0.22, startAt + durationSec * 0.7);
+    master.gain.exponentialRampToValueAtTime(0.0008, startAt + durationSec);
+
+    [[1, 1], [2, 0.26], [3, 0.1]].forEach(function (pair) {
+      var osc = ac.createOscillator();
+      var gain = ac.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq * pair[0], startAt);
+      gain.gain.setValueAtTime(pair[1], startAt);
+      osc.connect(gain); gain.connect(master);
+      osc.start(startAt);
+      osc.stop(startAt + durationSec + 0.05);
+    });
+  }
+
+  function playPattern(targets, tempo, onNote, onDone, articulation) {
+    var ac = getAudioContext();
+    if (ac.state === 'suspended') ac.resume();
+    var beat = 60 / tempo;
+    var hold = articulation === 'staccato'
+      ? Math.min(beat * 0.3, 0.22)
+      : Math.max(beat * 0.85, 0.35);
+    var t0 = ac.currentTime + 0.12;
+
+    targets.forEach(function (midi, i) {
+      playTone(midiToFrequency(midi), t0 + i * beat, hold);
+      setTimeout(function () { onNote(i); }, (t0 + i*beat - ac.currentTime) * 1000);
+    });
+    setTimeout(function () { onNote(-1); onDone(); },
+      (t0 + targets.length * beat - ac.currentTime) * 1000);
+  }
+
+
+  /* ============================================================
+     THE SESSION
+
+     A lesson, not a menu. VOXIE asks how you are, decides what you
+     are doing and why, then runs each exercise as a series of reps
+     climbing through your range until it hears effort, and coming
+     back down. No scores while you sing. Numbers afterwards only.
+     ============================================================ */
+
+  var checkin = { feel: null, goal: null, minutes: 10 };
+
+  var session = {
+    plan: [],
+    blockIndex: 0,
+    phase: 'idle',
+    transpose: 0,
+    direction: 'up',
+    repCount: 0,
+    effortStreak: 0,
+    ceilingReached: false,
+    startTranspose: 0,
+    reps: [],
+    lowestMidi: null,
+    highestMidi: null,
+    startedAt: 0,
+    lastLineKey: null,
+    silentStreak: 0,
+    abandoned: false
+  };
+
+  var MAX_REPS_PER_BLOCK = 14;
+  var STEP = 1;               // half steps, the way a coach walks a pattern
+  var CEILING_FROM_START = 9; // never climb more than this far above the start
+
+  /* ---------- the plan ----------
+     Health first: a voice reported as rough gets the gentle session
+     whatever the singer asked for, and is told why. */
+  function buildPlan() {
+    var gentle = checkin.feel === 'rough';
+    var tired = checkin.feel === 'tired';
+    var minutes = checkin.minutes;
+
+    var warmups = ['sovt-lip-trill', 'sovt-straw-siren', 'sovt-ng-siren', 'sovt-tongue-trill'];
+    var byGoal = {
+      warmup:   ['sovt-ng-siren', 'onset-balanced'],
+      range:    ['mix-octave-repeat', 'head-descending-octave', 'mix-passaggio-nay'],
+      breaks:   ['mix-passaggio-nay', 'sovt-ng-siren', 'mix-octave-repeat'],
+      strength: ['chest-descending-5', 'onset-balanced', 'breath-appoggio-sustain'],
+      gentle:   ['sovt-straw-siren', 'cooldown-descending-hum']
+    };
+
+    var blocks = [];
+
+    if (gentle) {
+      blocks.push({ id: 'sovt-straw-siren', reps: 5, climb: false });
+      blocks.push({ id: 'sovt-ng-siren', reps: 4, climb: false });
+      blocks.push({ id: 'cooldown-glide-down', reps: 3, climb: false });
+      return blocks;
+    }
+
+    blocks.push({ id: warmups[0], reps: tired ? 5 : 8, climb: !tired });
+
+    var focus = byGoal[checkin.goal] || byGoal.warmup;
+    var focusCount = minutes >= 20 ? 3 : (minutes >= 10 ? 2 : 1);
+    for (var i = 0; i < focusCount && i < focus.length; i++) {
+      blocks.push({ id: focus[i], reps: tired ? 5 : 9, climb: !tired });
+    }
+
+    blocks.push({ id: 'cooldown-descending-hum', reps: 4, climb: false });
+    return blocks;
+  }
+
+  function planIntro() {
+    var feel = checkin.feel, goal = checkin.goal;
+
+    if (feel === 'rough') {
+      return 'Let’s keep today very light. A voice that feels scratchy does not need a workout, it needs easy, quiet work and then some rest. Nothing here goes above a comfortable speaking pitch.';
+    }
+    var goalText = {
+      warmup: 'get you warm without wearing you out',
+      range: 'open up the top of your range, carefully',
+      breaks: 'smooth out the place where your voice wants to change gears',
+      strength: 'build some steadiness in the middle of your voice',
+      gentle: 'keep things ticking over gently'
+    }[goal] || 'get you warm';
+
+    var opener = feel === 'tired'
+      ? 'Since your voice is feeling tired, we’ll do less than usual and stay lower. '
+      : '';
+
+    return opener + 'Today we’re going to ' + goalText +
+      '. We’ll start on something semi-occluded to get the folds moving easily, then work through the main thing, then cool down properly.';
+  }
+
+  /* ---------- what the coach says between reps ----------
+     Pools rather than single lines, so a long block does not repeat
+     itself word for word. No numbers, ever, while the singer is working. */
+  var COACH_LINES = {
+    up_easy: ['Nice. Let’s take it up.', 'Good, that was easy. Up a step.', 'Lovely. Higher.'],
+    up_ok: ['Good. Up a step.', 'That’s it. Keep going up.', 'Again, a little higher.'],
+    same_lighter: ['Again, and lighter this time.', 'Same again, less push.', 'Once more, quieter.'],
+    same_air: ['Keep the air moving underneath it. Again.', 'Let it flow rather than press. Again.', 'Same again, one steady stream of air.'],
+    same_listen: ['Have another listen, then match it.', 'Listen once more, no rush.', 'Again, and let the note arrive before you sing it.'],
+    reach_up: ['That one sat a touch low. Aim slightly higher.', 'Just under the note. Reach up a little.'],
+    ease_down: ['Slightly over it. Ease off and let it settle.', 'A touch sharp. Less push.'],
+    turn_around: ['That’s starting to take effort. Let’s come back down.', 'Good, that’s the top for today. Back down.', 'We’ll turn around there. Down we go.'],
+    descend: ['Down a step.', 'Coming back down.', 'Keep it easy on the way down.'],
+    improving: ['Better. That one was easier, wasn’t it?', 'That felt freer. Again.', 'Yes, that’s the one.'],
+    quiet: ['I could barely hear you. A little closer, and a little more voice.'],
+    silent: ['I didn’t catch that one. Have another go.']
+  };
+
+  function pickLine(key) {
+    var pool = COACH_LINES[key] || COACH_LINES.up_ok;
+    var line = pool[Math.floor(Math.random() * pool.length)];
+    if (pool.length > 1 && line === session.lastLineKey) {
+      line = pool[(pool.indexOf(line) + 1) % pool.length];
+    }
+    session.lastLineKey = line;
+    return line;
+  }
+
+  /* ---------- reading one rep ----------
+     Returns what the coach says and where the exercise goes next.
+     Effort always wins: it turns the exercise around regardless of
+     how well the notes were sung. */
+  function readRep(result, block) {
+    var effort = result.topDegrades ||
+                 (result.sequenceScore < 50 && session.repCount > 1);
+
+    if (result.flags.indexOf('no_voice') >= 0) {
+      return { line: pickLine('silent'), move: 0, effort: false, skip: true, silent: true };
+    }
+    if (result.flags.indexOf('too_quiet') >= 0) {
+      return { line: pickLine('quiet'), move: 0, effort: false, skip: true };
+    }
+
+    if (effort) {
+      session.effortStreak++;
+      if (session.direction === 'up') {
+        return { line: pickLine('turn_around'), move: -STEP, effort: true, turn: true };
+      }
+      return { line: pickLine('same_lighter'), move: -STEP, effort: true };
+    }
+    session.effortStreak = 0;
+
+    // Climbing.
+    if (session.direction === 'up' && block.climb) {
+      if (result.sequenceScore < 55) return { line: pickLine('same_listen'), move: 0 };
+      if (result.pitchStability < 58) return { line: pickLine('same_air'), move: 0 };
+      if (result.medianOffset < -25) return { line: pickLine('reach_up'), move: 0 };
+      if (result.medianOffset > 25) return { line: pickLine('ease_down'), move: 0 };
+      if (result.score >= 82) return { line: pickLine('up_easy'), move: STEP };
+      return { line: pickLine('up_ok'), move: STEP };
+    }
+
+    // Descending, or a block that does not climb at all.
+    if (result.pitchStability < 58) return { line: pickLine('same_air'), move: block.climb ? -STEP : 0 };
+    if (result.score >= 80) return { line: pickLine('improving'), move: block.climb ? -STEP : 0 };
+    return { line: pickLine(block.climb ? 'descend' : 'same_lighter'), move: block.climb ? -STEP : 0 };
+  }
+
+  /* ---------- driving the session ---------- */
+  function currentBlock() { return session.plan[session.blockIndex]; }
+
+  function currentExercise() {
+    var block = currentBlock();
+    if (!block) return EXERCISES[0];
+    for (var i = 0; i < EXERCISES.length; i++) if (EXERCISES[i].id === block.id) return EXERCISES[i];
+    return EXERCISES[0];
+  }
+
+  function currentTargets() {
+    var ex = currentExercise();
+    return ex.pattern.map(function (s) { return ex.rootMidi + s + session.transpose; });
+  }
+
+  function startSession() {
+    session.plan = buildPlan();
+    session.blockIndex = 0;
+    session.reps = [];
+    session.silentStreak = 0;
+    session.abandoned = false;
+    session.lowestMidi = null;
+    session.highestMidi = null;
+    session.startedAt = Date.now();
+    startBlock();
+  }
+
+  function startBlock() {
+    session.transpose = 0;
+    session.startTranspose = 0;
+    session.direction = 'up';
+    session.repCount = 0;
+    session.effortStreak = 0;
+    session.ceilingReached = false;
+    renderBlockIntro();
+  }
+
+  function advanceAfterRep(reading) {
+    var block = currentBlock();
+    session.repCount++;
+
+    // A coach who cannot hear you stops and says so rather than
+    // running you through another ten repetitions of nothing.
+    if (reading.silent) session.silentStreak++;
+    else session.silentStreak = 0;
+    if (session.silentStreak >= 3) {
+      session.abandoned = true;
+      finishSession();
+      return false;
+    }
+
+    if (reading.turn) { session.direction = 'down'; session.ceilingReached = true; }
+
+    var next = session.transpose + (reading.skip ? 0 : reading.move);
+
+    // Safety ceiling. Even a voice that sounds easy does not climb
+    // indefinitely in one block.
+    if (next - session.startTranspose > CEILING_FROM_START) {
+      next = session.transpose - STEP;
+      session.direction = 'down';
+      session.ceilingReached = true;
+    }
+    session.transpose = next;
+
+    var doneClimbing = session.direction === 'down' &&
+                       session.transpose <= session.startTranspose - 4;
+    var outOfReps = session.repCount >= Math.min(block.reps, MAX_REPS_PER_BLOCK);
+
+    if (doneClimbing || outOfReps) { nextBlock(); return false; }
+    return true;
+  }
+
+  function nextBlock() {
+    session.blockIndex++;
+    if (session.blockIndex >= session.plan.length) { finishSession(); return; }
+    startBlock();
+  }
+
+  /* ============================================================
+     SCREENS
+     ============================================================ */
+  var els = {};
+  ['screenCheckin','screenPlan','screenSession','screenSummary','feelRow','goalRow',
+   'timeRow','beginBtn','planIntro','planList','planStartBtn','blockName','blockOf',
+   'blockWhy','coachSays','stageLabel','noteName','trace','tightBtn','doneBtn',
+   'restartBtn','summaryTitle','summaryBody','summaryStats','sessionProgress',
+   'errorNotice','teachToggle','teachBody'].forEach(function (id) {
+    els[id] = document.getElementById(id);
+  });
+
+  function showScreen(name) {
+    els.screenCheckin.hidden = name !== 'checkin';
+    els.screenPlan.hidden = name !== 'plan';
+    els.screenSession.hidden = name !== 'session';
+    els.screenSummary.hidden = name !== 'summary';
+  }
+
+  function showError(html) { els.errorNotice.innerHTML = html; els.errorNotice.hidden = false; }
+
+  /* ---------- check in ---------- */
+  function wireChoices(row, key, onPick) {
+    row.querySelectorAll('.choice').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        row.querySelectorAll('.choice').forEach(function (b) { b.classList.remove('is-picked'); });
+        btn.classList.add('is-picked');
+        checkin[key] = btn.dataset.value;
+        if (key === 'minutes') checkin.minutes = parseInt(btn.dataset.value, 10);
+        if (onPick) onPick();
+        els.beginBtn.disabled = !(checkin.feel && checkin.goal);
+      });
+    });
+  }
+  wireChoices(els.feelRow, 'feel');
+  wireChoices(els.goalRow, 'goal');
+  wireChoices(els.timeRow, 'minutes');
+
+  els.beginBtn.addEventListener('click', function () {
+    session.plan = buildPlan();
+    renderPlanScreen();
+    showScreen('plan');
+  });
+
+  function renderPlanScreen() {
+    els.planIntro.textContent = planIntro();
+    els.planList.innerHTML = '';
+    session.plan.forEach(function (block, i) {
+      var ex = null;
+      for (var k = 0; k < EXERCISES.length; k++) if (EXERCISES[k].id === block.id) ex = EXERCISES[k];
+      if (!ex) return;
+      var row = document.createElement('div');
+      row.className = 'plan-row';
+      var num = document.createElement('span');
+      num.className = 'plan-num';
+      num.textContent = String(i + 1);
+      var text = document.createElement('div');
+      var name = document.createElement('div');
+      name.className = 'plan-name';
+      name.textContent = ex.name;
+      var meta = document.createElement('div');
+      meta.className = 'plan-meta';
+      meta.textContent = ex.category + ' · on ' + ex.sound;
+      text.appendChild(name); text.appendChild(meta);
+      row.appendChild(num); row.appendChild(text);
+      els.planList.appendChild(row);
+    });
+  }
+
+  els.planStartBtn.addEventListener('click', function () {
+    startSession();
+    showScreen('session');
+  });
+
+  /* ---------- the session screen ---------- */
+  function renderBlockIntro() {
+    var ex = currentExercise();
+    els.blockName.textContent = ex.name;
+    els.blockOf.textContent = 'Part ' + (session.blockIndex + 1) + ' of ' + session.plan.length;
+    els.blockWhy.textContent = ex.why;
+    els.teachBody.textContent = ex.instruction + ' ' + ex.watchFor;
+    els.sessionProgress.style.width =
+      Math.round((session.blockIndex / session.plan.length) * 100) + '%';
+    setCoach(ex.instruction);
+    setStage('Listen');
+    setTimeout(runRep, 1400);
+  }
+
+  function setCoach(text) { els.coachSays.textContent = text; }
+  function setStage(label) { els.stageLabel.textContent = label; }
+
+  /* One repetition: VOXIE demonstrates, the singer answers, VOXIE responds. */
+  function runRep() {
+    var ex = currentExercise();
+    var targets = currentTargets();
+    setStage('Listen');
+    els.doneBtn.hidden = true;
+
+    playPattern(targets, ex.tempo, function () {}, function () {
+      setStage('Your turn');
+      setCoach('…');
+      startListening(targets);
+    }, ex.articulation);
+  }
+
+  var micStream = null, analyser = null, sourceNode = null, audioBuffer = null;
+  var recording = false, rafId = null, startedAt = 0, lastAnalysis = 0;
+  var samples = [], trace = [], activeTargets = [];
+  var autoStopTimer = null;
+  var TRACE_WINDOW_MS = 12000, ANALYSIS_INTERVAL_MS = 33;
+
+  async function ensureMic() {
+    if (micStream) return true;
+    try {
+      micStream = await navigator.mediaDevices.getUserMedia({
+        audio: { echoCancellation: false, noiseSuppression: false, autoGainControl: false }
+      });
+    } catch (err) {
+      var n = err && err.name ? err.name : 'Error';
+      showError(n === 'NotAllowedError' || n === 'SecurityError'
+        ? '<strong>The microphone is blocked.</strong> Allow it when your browser asks, then reload this page.'
+        : '<strong>Could not open the microphone.</strong> ' + n + '.');
+      return false;
+    }
+    var ac = getAudioContext();
+    if (ac.state === 'suspended') await ac.resume();
+    sourceNode = ac.createMediaStreamSource(micStream);
+    analyser = ac.createAnalyser();
+    analyser.fftSize = 2048;
+    analyser.smoothingTimeConstant = 0;
+    sourceNode.connect(analyser);
+    audioBuffer = new Float32Array(analyser.fftSize);
+    return true;
+  }
+
+  async function startListening(targets) {
+    var ok = await ensureMic();
+    if (!ok) return;
+
+    activeTargets = targets;
+    samples = []; trace = [];
+    resetOctaveLock();
+    recording = true;
+    startedAt = performance.now();
+    lastAnalysis = 0;
+    els.doneBtn.hidden = false;
+    listenLoop();
+
+    // A coach does not wait forever. Give the singer the length of the
+    // pattern plus a generous margin, then move on.
+    var ex = currentExercise();
+    var expectedMs = (targets.length * (60 / ex.tempo) * 1000) + 2600;
+    clearTimeout(autoStopTimer);
+    autoStopTimer = setTimeout(function () { if (recording) finishRep(); }, expectedMs);
+  }
+
+  function listenLoop() {
+    if (!recording) return;
+    rafId = requestAnimationFrame(listenLoop);
+    var now = performance.now();
+    if (now - lastAnalysis < ANALYSIS_INTERVAL_MS) return;
+    lastAnalysis = now;
+
+    analyser.getFloatTimeDomainData(audioBuffer);
+    var ss = 0;
+    for (var i = 0; i < audioBuffer.length; i++) ss += audioBuffer[i] * audioBuffer[i];
+    var rms = Math.sqrt(ss / audioBuffer.length);
+    var volumeDb = rms > 0 ? 20 * Math.log10(rms) : -100;
+
+    var ac = getAudioContext();
+    var res = volumeDb >= MIN_VOLUME_DB
+      ? detectYin(conditionSignal(audioBuffer, ac.sampleRate), ac.sampleRate, 65, 1200)
+      : null;
+
+    var t = now - startedAt;
+    var freq = applyOctaveLock(res ? res.freq : -1, t);
+    var sample = { pitch: freq, confidence: res ? res.confidence : 0, volume: volumeDb, t: t };
+    samples.push(sample);
+    trace.push(sample);
+    while (trace.length && t - trace[0].t > TRACE_WINDOW_MS) trace.shift();
+
+    // The note name is here because singers look for it. The scores are not.
+    if (freq > 0 && sample.confidence >= 0.5) {
+      els.noteName.textContent = midiToNoteName(frequencyToMidi(freq));
+      els.noteName.className = 'note-name is-on';
+    } else {
+      els.noteName.textContent = '·';
+      els.noteName.className = 'note-name';
+    }
+    drawTrace(t);
+  }
+
+  function stopMicLoop() {
+    recording = false;
+    clearTimeout(autoStopTimer);
+    if (rafId) cancelAnimationFrame(rafId);
+    els.doneBtn.hidden = true;
+    els.noteName.textContent = '·';
+    els.noteName.className = 'note-name';
+  }
+
+  function finishRep() {
+    stopMicLoop();
+    var result = analyzeAttempt(samples, activeTargets);
+
+    result.notes.forEach(function (n) {
+      if (session.lowestMidi === null || n.midi < session.lowestMidi) session.lowestMidi = n.midi;
+      if (session.highestMidi === null || n.midi > session.highestMidi) session.highestMidi = n.midi;
+    });
+
+    var block = currentBlock();
+    var reading = readRep(result, block);
+    session.reps.push({ result: result, transpose: session.transpose, effort: !!reading.effort });
+
+    setStage('');
+    setCoach(reading.line);
+
+    var keepGoing = advanceAfterRep(reading);
+    if (keepGoing) setTimeout(runRep, 1900);
+  }
+
+  els.doneBtn.addEventListener('click', function () { if (recording) finishRep(); });
+
+  /* The singer's own report always outranks anything the microphone
+     inferred. One tap backs the exercise off immediately. */
+  els.tightBtn.addEventListener('click', function () {
+    if (recording) stopMicLoop();
+    clearTimeout(autoStopTimer);
+    session.direction = 'down';
+    session.ceilingReached = true;
+    session.transpose -= 2;
+    session.effortStreak += 2;
+    setCoach('Thank you for telling me. We’ll come straight back down, and there is no rush to go back up.');
+    setTimeout(function () {
+      if (session.transpose <= session.startTranspose - 3) nextBlock();
+      else runRep();
+    }, 2600);
+  });
+
+  /* ---------- the trace ---------- */
+  function sizeCanvas() {
+    var cv = els.trace, dpr = window.devicePixelRatio || 1;
+    var rect = cv.getBoundingClientRect();
+    if (!rect.width) return;
+    var w = Math.round(rect.width * dpr), h = Math.round(rect.height * dpr);
+    if (cv.width !== w || cv.height !== h) { cv.width = w; cv.height = h; }
+    cv._css = { w: rect.width, h: rect.height, dpr: dpr };
+  }
+
+  function drawTrace(nowT) {
+    var cv = els.trace, g = cv.getContext('2d');
+    sizeCanvas();
+    var dpr = (cv._css && cv._css.dpr) || 1;
+    g.setTransform(dpr, 0, 0, dpr, 0, 0);
+    var W = (cv._css && cv._css.w) || cv.width, H = (cv._css && cv._css.h) || cv.height;
+
+    g.fillStyle = '#100A1C';
+    g.fillRect(0, 0, W, H);
+
+    var lo = 60, hi = 72;
+    if (activeTargets.length) {
+      lo = Math.min.apply(null, activeTargets) - 4;
+      hi = Math.max.apply(null, activeTargets) + 4;
+    }
+    var voiced = trace.filter(function (s) { return s.pitch > 0 && s.confidence >= 0.5; });
+    if (voiced.length) {
+      var ms = voiced.map(function (s) { return frequencyToMidi(s.pitch); });
+      lo = Math.min(lo, Math.min.apply(null, ms) - 1);
+      hi = Math.max(hi, Math.max.apply(null, ms) + 1);
+    }
+    var yOf = function (m) { return H - ((m - lo) / (hi - lo)) * H; };
+    var startT = Math.max(0, nowT - TRACE_WINDOW_MS);
+    var xOf = function (t) { return ((t - startT) / TRACE_WINDOW_MS) * W; };
+
+    activeTargets.filter(function (v, i, a) { return a.indexOf(v) === i; }).forEach(function (m) {
+      var y = yOf(m);
+      g.strokeStyle = 'rgba(124,92,255,0.4)';
+      g.lineWidth = 1;
+      g.setLineDash([4, 4]);
+      g.beginPath(); g.moveTo(0, y); g.lineTo(W, y); g.stroke();
+      g.setLineDash([]);
+    });
+
+    if (!voiced.length) return;
+
+    g.strokeStyle = '#A855F7';
+    g.lineWidth = 2.5;
+    g.lineJoin = 'round'; g.lineCap = 'round';
+    g.beginPath();
+    var down = false, lastT = -Infinity;
+    voiced.forEach(function (s) {
+      var x = xOf(s.t), y = yOf(frequencyToMidi(s.pitch));
+      if (!down || s.t - lastT > 150) { g.moveTo(x, y); down = true; }
+      else g.lineTo(x, y);
+      lastT = s.t;
+    });
+    g.stroke();
+  }
+
+  /* ---------- the end ---------- */
+  function finishSession() {
+    stopMicLoop();
+    if (micStream) { micStream.getTracks().forEach(function (t) { t.stop(); }); micStream = null; }
+    if (sourceNode) { sourceNode.disconnect(); sourceNode = null; }
+    analyser = null;
+
+    var reps = session.reps.filter(function (r) { return r.result.notes.length > 0; });
+    var minutes = Math.max(1, Math.round((Date.now() - session.startedAt) / 60000));
+    var anyEffort = session.reps.some(function (r) { return r.effort; });
+
+    if (session.abandoned) {
+      els.summaryTitle.textContent = 'I could not hear you';
+      els.summaryBody.innerHTML =
+        '<p>Several repetitions went by with no sound reaching me, so I stopped rather than keep going.</p>' +
+        '<p>Check that this page has permission to use your microphone, that nothing else is holding it, ' +
+        'and that you are somewhere quiet enough. Then start again.</p>';
+      els.summaryStats.innerHTML = '';
+      showScreen('summary');
+      return;
+    }
+
+    els.summaryTitle.textContent = checkin.feel === 'rough'
+      ? 'That’s enough for today'
+      : 'Nicely done';
+
+    var body = [];
+    if (checkin.feel === 'rough') {
+      body.push('You kept it light, which was the right call. Give your voice as much quiet as you can manage today, drink more water than feels necessary, and if it still feels scratchy in a few days it is worth getting it looked at by an ENT or a voice teacher.');
+    } else if (anyEffort) {
+      body.push('We found the top of your comfortable range today and stopped there rather than pushing through it. That ceiling moves on its own over weeks, and it moves faster when you do not chase it.');
+    } else {
+      body.push('That all sat comfortably, which is exactly what a warm up should feel like. Nothing in there was a struggle.');
+    }
+
+    if (session.lowestMidi !== null && session.highestMidi !== null) {
+      body.push('You sang from ' + midiToNoteName(session.lowestMidi) + ' to ' +
+                midiToNoteName(session.highestMidi) + ' across ' + reps.length + ' repetitions.');
+    }
+    body.push('<strong>Take away:</strong> ' + takeaway());
+    els.summaryBody.innerHTML = body.map(function (p) { return '<p>' + p + '</p>'; }).join('');
+
+    // Numbers live here, after the singing, and nowhere else.
+    var avg = function (fn) {
+      if (!reps.length) return 0;
+      return Math.round(reps.reduce(function (a, r) { return a + fn(r.result); }, 0) / reps.length);
+    };
+    els.summaryStats.innerHTML =
+      statTile(minutes + (minutes === 1 ? ' min' : ' mins'), 'Practised') +
+      statTile(String(reps.length), 'Repetitions') +
+      statTile(String(avg(function (r) { return r.pitchAccuracy; })), 'Avg accuracy') +
+      statTile(String(avg(function (r) { return r.pitchStability; })), 'Avg steadiness');
+
+    showScreen('summary');
+  }
+
+  function statTile(value, label) {
+    return '<div class="stat"><div class="stat-value">' + value +
+           '</div><div class="stat-label">' + label + '</div></div>';
+  }
+
+  function takeaway() {
+    var reps = session.reps.filter(function (r) { return r.result.notes.length > 0; });
+    if (!reps.length) return 'Come back when you have a quiet few minutes and we will start again.';
+    var avgStab = reps.reduce(function (a, r) { return a + r.result.pitchStability; }, 0) / reps.length;
+    var avgAcc = reps.reduce(function (a, r) { return a + r.result.pitchAccuracy; }, 0) / reps.length;
+    if (session.reps.some(function (r) { return r.effort; }))
+      return 'when a note starts to feel like work, that is the signal to go quieter, not louder.';
+    if (avgStab < 62)
+      return 'your notes were landing but wandering. Spend a minute on the steady sustain before you sing this week.';
+    if (avgAcc < 68)
+      return 'listen for a beat longer before you sing. Most of the drift today was starting before the note was in your ear.';
+    return 'that felt easy, so keep it easy. Coming back tomorrow for five minutes beats an hour on Sunday.';
+  }
+
+  els.restartBtn.addEventListener('click', function () {
+    checkin = { feel: null, goal: null, minutes: 10 };
+    session.reps = [];
+    document.querySelectorAll('.choice').forEach(function (b) { b.classList.remove('is-picked'); });
+    els.beginBtn.disabled = true;
+    showScreen('checkin');
+  });
+
+  els.teachToggle.addEventListener('click', function () {
+    els.teachBody.hidden = !els.teachBody.hidden;
+    els.teachToggle.textContent = els.teachBody.hidden ? 'How to do it' : 'Hide';
+  });
+
+  window.addEventListener('resize', function () { if (!recording) drawTrace(0); });
+
+  if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+    showError('<strong>This browser cannot open a microphone.</strong> Open this page directly in Safari or Chrome.');
+  }
+
+  showScreen('checkin');
+
+})();
+</script>
+
+</body>
+</html>
